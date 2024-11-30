@@ -45,7 +45,7 @@ def generar_clave(password: str, salt: bytes, bits: int) -> bytes:
     )
     return kdf.derive(password_modificada.encode())
 
-# Función para cifrar datos
+# Función para cifrar datos con AES
 def cifrar_aes(mensaje: str, clave: bytes) -> tuple:
     iv = os.urandom(16)  # Vector de inicialización
     cipher = Cipher(algorithms.AES(clave), modes.CBC(iv), backend=default_backend())
@@ -59,7 +59,7 @@ def cifrar_aes(mensaje: str, clave: bytes) -> tuple:
     mensaje_cifrado = encryptor.update(mensaje_padded) + encryptor.finalize()
     return base64.b64encode(mensaje_cifrado).decode(), base64.b64encode(iv).decode()
 
-# Función para descifrar datos
+# Función para descifrar datos con AES
 def descifrar_aes(mensaje_cifrado: str, clave: bytes, iv: str) -> str:
     mensaje_cifrado_bytes = base64.b64decode(mensaje_cifrado)
     iv_bytes = base64.b64decode(iv)
@@ -74,40 +74,40 @@ def descifrar_aes(mensaje_cifrado: str, clave: bytes, iv: str) -> str:
     mensaje = unpadder.update(mensaje_padded) + unpadder.finalize()
     return mensaje.decode()
 
-# Función para calcular la diferencia entre la fecha y la hora
-def calcular_diferencia_fecha_hora():
-    # Obtener la fecha y hora actual
-    now = datetime.now()
-    fecha = now.strftime("%d/%m/%y")  # Formato dd/mm/yy
-    hora = now.strftime("%H:%M:%S")  # Formato hh:mm:ss
-
-    # Sumar los valores de la fecha
-    fecha_dia, fecha_mes, fecha_anno = map(int, fecha.split('/'))
-    suma_fecha = fecha_dia + fecha_mes + fecha_anno
-
-    # Sumar los valores de la hora
-    hora_hora, hora_minuto, hora_segundo = map(int, hora.split(':'))
-    suma_hora = hora_hora + hora_minuto + hora_segundo
-
-    # Calcular la diferencia
-    diferencia = suma_fecha - suma_hora
-
-    # Retornar el valor absoluto de la diferencia
-    return abs(diferencia)
-
 # Función de cifrado César
 def cifrado_cesar(mensaje: str, clave: int) -> str:
     resultado = []
     for char in mensaje:
-        if char.isalpha():
-            # Determinar si es mayúscula o minúscula
-            start = ord('A') if char.isupper() else ord('a')
-            # Aplicar el desplazamiento con la clave
-            resultado.append(chr((ord(char) - start + clave) % 26 + start))
+        if char.isalpha():  # Si es una letra
+            desplazamiento = clave % 26  # Asegurar que el desplazamiento sea entre 0 y 25
+            if char.islower():
+                resultado.append(chr((ord(char) - ord('a') + desplazamiento) % 26 + ord('a')))
+            elif char.isupper():
+                resultado.append(chr((ord(char) - ord('A') + desplazamiento) % 26 + ord('A')))
         else:
-            # Si no es una letra, lo dejamos igual
-            resultado.append(char)
+            resultado.append(char)  # No modificar otros caracteres
     return ''.join(resultado)
+
+# Función de descifrado César
+def descifrado_cesar(mensaje: str, clave: int) -> str:
+    return cifrado_cesar(mensaje, -clave)  # Simplemente usamos la clave negativa para revertir el cifrado
+
+# Función para calcular la diferencia de fecha y hora
+def calcular_diferencia_fecha_hora() -> int:
+    # Obtener fecha y hora actuales
+    fecha_actual = datetime.now()
+    fecha = fecha_actual.strftime("%d/%m/%y")
+    hora = fecha_actual.strftime("%H:%M:%S")
+
+    # Sumar los valores de la fecha
+    suma_fecha = sum(int(x) for x in fecha.split('/'))  # Sumar los valores de día, mes, año
+
+    # Sumar los valores de la hora
+    suma_hora = sum(int(x) for x in hora.split(':'))  # Sumar las horas, minutos, segundos
+
+    # Calcular la diferencia y devolver el valor absoluto
+    diferencia = abs(suma_fecha - suma_hora)
+    return diferencia
 
 # Programa principal
 if __name__ == "__main__":
@@ -130,15 +130,21 @@ if __name__ == "__main__":
     # Mostrar la clave modificada (invertida y separada)
     print(f"\nClave invertida y separada: {modificar_clave(password)}")
     
-    # Cifrar el mensaje
+    # Paso 3: Cifrar el mensaje con AES
     mensaje_cifrado, iv = cifrar_aes(mensaje, clave)
-    print(f"\nMensaje cifrado: {mensaje_cifrado}")
+    print(f"\nMensaje cifrado con AES: {mensaje_cifrado}")
     print(f"IV (vector de inicialización): {iv}")
     
-    # Paso 3: Aplicar el cifrado César con la diferencia como clave
+    # Paso 4: Cifrar aún más el mensaje cifrado con el cifrado César
     mensaje_cifrado_final = cifrado_cesar(mensaje_cifrado, diferencia)
     print(f"\nMensaje cifrado FINAL con César: {mensaje_cifrado_final}")
     
-    # Descifrar el mensaje
-    mensaje_descifrado = descifrar_aes(mensaje_cifrado, clave, iv)
-    print(f"\nMensaje descifrado: {mensaje_descifrado}")
+    # Paso 5: Descifrar el mensaje con el cifrado César
+    mensaje_descifrado_cesar = descifrado_cesar(mensaje_cifrado_final, diferencia)
+    print(f"\nMensaje descifrado con César: {mensaje_descifrado_cesar}")
+    
+    # Paso 6: Descifrar el mensaje con AES
+    mensaje_descifrado = descifrar_aes(mensaje_descifrado_cesar, clave, iv)
+    print(f"\nMensaje FINAL descifrado con AES: {mensaje_descifrado}")
+    
+    
