@@ -15,8 +15,24 @@ def determinar_longitud_clave(password: str) -> int:
     else:
         return 256  # Clave de 256 bits (32 bytes)
 
-# Función para generar una clave desde una contraseña
+# Función para invertir la clave y separarla con el número de caracteres
+def modificar_clave(clave: str) -> str:
+    # Invertir la clave
+    clave_invertida = clave[::-1]
+    
+    # Obtener el número de caracteres de la clave
+    n_caracteres = len(clave)
+    
+    # Crear la nueva clave separada con el número de caracteres
+    clave_modificada = ''.join([f"{n_caracteres}{c}" for c in clave_invertida])
+    
+    return clave_modificada
+
+# Función para generar la clave desde la contraseña (modificada)
 def generar_clave(password: str, salt: bytes, bits: int) -> bytes:
+    # Modificar la clave antes de generar la clave de cifrado
+    password_modificada = modificar_clave(password)
+    
     longitud = {128: 16, 192: 24, 256: 32}[bits]
     kdf_iterations = {128: 10, 192: 12, 256: 14}[bits]  # Simulación de rondas
     kdf = PBKDF2HMAC(
@@ -26,7 +42,7 @@ def generar_clave(password: str, salt: bytes, bits: int) -> bytes:
         iterations=kdf_iterations,  # Ajusta las iteraciones según las rondas deseadas
         backend=default_backend()
     )
-    return kdf.derive(password.encode())
+    return kdf.derive(password_modificada.encode())
 
 # Función para cifrar datos
 def cifrar_aes(mensaje: str, clave: bytes) -> tuple:
