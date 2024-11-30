@@ -87,6 +87,9 @@ if __name__ == "__main__":
     salt = os.urandom(16)
     clave = generar_clave(password, salt, bits)
     
+    # Mostrar la clave modificada (invertida y separada)
+    print(f"\nClave invertida y separada: {modificar_clave(password)}")
+    
     # Cifrar el mensaje
     mensaje_cifrado, iv = cifrar_aes(mensaje, clave)
     print(f"\nMensaje cifrado: {mensaje_cifrado}")
