@@ -109,9 +109,14 @@ def calcular_diferencia_fecha_hora() -> int:
     diferencia = abs(suma_fecha - suma_hora)
     return diferencia
 
-# Programa principal
+# Programa de arranque
 if __name__ == "__main__":
-    # Paso 1: Calcular la diferencia fecha-hora
+    
+    
+    print("|--------------------------------------------------------------------------|")
+    print("***************************** CIFRADO Cryptify *****************************")
+    print("|--------------------------------------------------------------------------|")
+    # Paso 1: Calcular la diferencia fecha-hora  
     diferencia = calcular_diferencia_fecha_hora()
     print(f"\nValor absoluto de la diferencia de fecha y hora: {diferencia}")
 
@@ -132,8 +137,8 @@ if __name__ == "__main__":
     
     # Paso 3: Cifrar el mensaje con AES
     mensaje_cifrado, iv = cifrar_aes(mensaje, clave)
-    print(f"\nMensaje cifrado con AES: {mensaje_cifrado}")
-    print(f"IV (vector de inicialización): {iv}")
+    print(f"\nIV vector de inicialización: {iv}")
+    print(f"Mensaje cifrado con AES: {mensaje_cifrado}")
     
     # Paso 4: Cifrar aún más el mensaje cifrado con el cifrado César
     mensaje_cifrado_final = cifrado_cesar(mensaje_cifrado, diferencia)
