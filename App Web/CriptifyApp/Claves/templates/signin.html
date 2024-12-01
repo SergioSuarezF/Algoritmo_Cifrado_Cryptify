@@ -1,20 +1,18 @@
 {% extends 'menu.html' %}
 
 {% block content %}
-
-<h1>Registro</h1>
+<h1>Iniciar Sesión</h1>
 
 {{error}}
 
-<form action="/signup/" method="POST">
+<form action="/signin/" method="POST">
     {% csrf_token %}
-
     {{formulario.as_p}}
-
     <button>
-        Registrarme
+        Iniciar Sesión
     </button>
 
 </form>
+
 
 {% endblock %}
