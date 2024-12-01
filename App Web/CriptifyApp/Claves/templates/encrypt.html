@@ -2,7 +2,9 @@
 
 {% block content %}
 
-<h1>Encriptación de Claves</h1>
+<h1>Encriptación</h1>
+
+<h2>Encriptar un mensaje</h2>
 
 <form method="post">
     {% csrf_token %}
@@ -12,10 +14,44 @@
 
 {% if encrypted_message %}
     <h3>Mensaje Cifrado</h3>
-    <textarea readonly>{{ encrypted_message }}</textarea>
+    <textarea id="encryptedMessage" readonly>{{ encrypted_message }}</textarea>  <!-- Asegúrate de poner el id aquí -->
+    <button id="copyButton" onclick="copyToClipboard()">Copiar Mensaje Cifrado</button>  <!-- El botón para copiar -->
     <h3>IV Vector de Inicialización</h3>
     <input type="text" value="{{ iv }}" readonly>
     <h3>Mensaje Descifrado</h3>
     <textarea readonly>{{ decrypted_message }}</textarea>
 {% endif %}
+
+
+<h2>Desencriptar un mensaje</h2>
+
+
+
+
+
+
+<script>
+    // Función para copiar el mensaje cifrado al portapapeles utilizando el método moderno
+    function copyToClipboard() {
+        var encryptedMessage = document.getElementById("encryptedMessage"); // Obtenemos el elemento textarea
+    
+        if (encryptedMessage) {
+            console.log("Botón presionado, mensaje a copiar:", encryptedMessage.value); // Verificamos si se obtiene el mensaje
+            
+            // Usamos el método moderno 'navigator.clipboard.writeText'
+            navigator.clipboard.writeText(encryptedMessage.value)
+                .then(function() {
+                    console.log("Texto copiado con éxito"); // Verificamos si se copió correctamente
+                    alert("¡Mensaje cifrado copiado al portapapeles!"); // Mostrar mensaje de éxito
+                })
+                .catch(function(err) {
+                    console.log("Error al copiar:", err); // Si hubo un error, lo mostramos en consola
+                    alert("No se pudo copiar al portapapeles: " + err); // Mostrar error en caso de fallo
+                });
+        } else {
+            console.log("No se pudo encontrar el mensaje cifrado en el DOM");
+        }
+    }
+</script>
+
 {% endblock %}
