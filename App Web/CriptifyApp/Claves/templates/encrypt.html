@@ -34,23 +34,19 @@
     // Función para copiar el mensaje cifrado al portapapeles utilizando el método moderno
     function copyToClipboard() {
         var encryptedMessage = document.getElementById("encryptedMessage"); // Obtenemos el elemento textarea
-    
-        if (encryptedMessage) {
-            console.log("Botón presionado, mensaje a copiar:", encryptedMessage.value); // Verificamos si se obtiene el mensaje
-            
-            // Usamos el método moderno 'navigator.clipboard.writeText'
-            navigator.clipboard.writeText(encryptedMessage.value)
-                .then(function() {
-                    console.log("Texto copiado con éxito"); // Verificamos si se copió correctamente
-                    alert("¡Mensaje cifrado copiado al portapapeles!"); // Mostrar mensaje de éxito
-                })
-                .catch(function(err) {
-                    console.log("Error al copiar:", err); // Si hubo un error, lo mostramos en consola
-                    alert("No se pudo copiar al portapapeles: " + err); // Mostrar error en caso de fallo
-                });
-        } else {
-            console.log("No se pudo encontrar el mensaje cifrado en el DOM");
-        }
+        
+        console.log("Botón presionado, mensaje a copiar:", encryptedMessage.value); // Verificamos si se obtiene el mensaje
+        
+        // Usamos el método moderno 'navigator.clipboard.writeText'
+        navigator.clipboard.writeText(encryptedMessage.value)
+            .then(function() {
+                console.log("Texto copiado con éxito"); // Verificamos si se copió correctamente
+                alert("¡Mensaje cifrado copiado al portapapeles!"); // Mostrar mensaje de éxito
+            })
+            .catch(function(err) {
+                console.log("Error al copiar:", err); // Si hubo un error, lo mostramos en consola
+                alert("No se pudo copiar al portapapeles: " + err); // Mostrar error en caso de fallo
+            });
     }
 </script>
 
