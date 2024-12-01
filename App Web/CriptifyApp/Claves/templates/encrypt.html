@@ -4,4 +4,18 @@
 
 <h1>Encriptación de Claves</h1>
 
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Cifrar</button>
+</form>
+
+{% if encrypted_message %}
+    <h3>Mensaje Cifrado</h3>
+    <textarea readonly>{{ encrypted_message }}</textarea>
+    <h3>IV (Vector de Inicialización)</h3>
+    <input type="text" value="{{ iv }}" readonly>
+    <h3>Mensaje Descifrado</h3>
+    <textarea readonly>{{ decrypted_message }}</textarea>
+{% endif %}
 {% endblock %}
