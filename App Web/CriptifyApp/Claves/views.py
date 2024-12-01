@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.db import IntegrityError
 #from django.http import HttpResponse
 
@@ -38,7 +38,9 @@ def encrypt(request):
     return render(request, 'encrypt.html')
             
 
-    
+def signout(request):
+    logout(request)
+    return redirect('home')
     
 
 
