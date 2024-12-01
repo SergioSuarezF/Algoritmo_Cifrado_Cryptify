@@ -1,10 +1,34 @@
 from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from django.http import HttpResponse
 #from django.http import HttpResponse
 
 # Create your views here.
-def helloworld(request):
+def home(request):
+    return render(request, 'home.html')
+
+def signup(request): 
     
-    return render(request, 'signup.html', {
-        'formulario': UserCreationForm,
-    })
+    if request.method == 'GET':
+        return render(request, 'signup.html', {
+            'formulario': UserCreationForm
+        })
+    else:
+        if request.POST['password1'] == request.POST['password1']:
+            try:
+                # Registrar usuario
+                user = User.objects.create_user(username=request.POST['username'], password=request.POST['password1'])
+                user.save()
+                return HttpResponse('Usuario creado!')
+            except:
+                return HttpResponse('El usuario ya existe')
+        return HttpResponse('Contraseñas no coinciden')
+            
+
+    
+    
+
+
+
+
